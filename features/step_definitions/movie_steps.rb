@@ -32,6 +32,8 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
   action = uncheck ? "uncheck" : "check"
+  # Calling steps from web_steps.rb
+  # Ref: https://stackoverflow.com/questions/918066/reuse-cucumber-steps
   rating_list.split(' ').each { |rating| 
     steps %Q{Then I #{action} "ratings_#{rating}"}
   }
