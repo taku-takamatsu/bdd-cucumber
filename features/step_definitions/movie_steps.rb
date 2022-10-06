@@ -4,8 +4,9 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
+    Movie.create!(:title => movie[:title], :release_date => movie[:release_date], :rating => movie[:rating])
   end
-  pending "Fill in this step in movie_steps.rb"
+  # pending "Fill in this step in movie_steps.rb"
 end
 
 Then /(.*) seed movies should exist/ do | n_seeds |
@@ -29,18 +30,34 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  pending "Fill in this step in movie_steps.rb"
+  action = uncheck ? "uncheck" : "check"
+  rating_list.split(' ').each { |rating| 
+    steps %Q{Then I #{action} "ratings_#{rating}"}
+  }
 end
 
 # Part 2, Step 3
 Then /^I should (not )?see the following movies: (.*)$/ do |no, movie_list|
   # Take a look at web_steps.rb Then /^(?:|I )should see "([^"]*)"$/
-  pending "Fill in this step in movie_steps.rb"
+  if !no
+    # see the movie list
+    movie_list.split(',').each { |movie|
+      steps %Q{Then I should see "#{movie}"}
+    }
+  else
+    movie_list.split(',').each { |movie|
+      steps %Q{Then I should not see "#{movie}"}
+    }
+  end
+
 end
 
 Then /I should see all the movies/ do
   # Make sure that all the movies in the app are visible in the table
-  pending "Fill in this step in movie_steps.rb"
+  # If you have computed rows as the number of table rows, 
+  # you can use the assertion expect(rows).to eq value to fail the test in case the values don’t match.
+  # https://stackoverflow.com/questions/2986250/how-to-assert-on-number-of-html-table-rows-in-ruby-using-capybara-cucumber
+  all('table#movies tr').count == Movie.all.count
 end
 
 ### Utility Steps Just for this assignment.
